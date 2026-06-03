@@ -13,11 +13,12 @@ export default async function AdminPage() {
     db.select({ count: count() }).from(messages).where(eq(messages.read, false)),
   ]);
 
-  const sections = [
+  const sections: { title: string; count: number | null; href: string; sub: string; alert?: boolean }[] = [
     { title: "Posts", count: postCount.count, href: "/admin/posts", sub: "Blog posts" },
     { title: "Projects", count: projectCount.count, href: "/admin/projects", sub: "Portfolio projects" },
     { title: "Skills", count: skillCount.count, href: "/admin/skills", sub: "Skill entries" },
     { title: "Comments", count: pendingComments.count, href: "/admin/comments", sub: "Pending approval", alert: pendingComments.count > 0 },
+    { title: "Profile", count: null, href: "/admin/profile", sub: "Work status & identity" },
     { title: "Messages", count: unreadMessages.count, href: "/admin/messages", sub: "Unread messages", alert: unreadMessages.count > 0 },
   ];
 
@@ -43,7 +44,7 @@ export default async function AdminPage() {
             }`}
           >
             <p className={`text-4xl font-black group-hover:text-[#d4f600] transition-colors ${s.alert ? "text-[#d4f600]" : "text-white"}`}>
-              {s.count}
+              {s.count ?? "→"}
             </p>
             <div>
               <p className="font-semibold text-sm">{s.title}</p>

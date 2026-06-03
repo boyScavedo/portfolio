@@ -53,6 +53,28 @@ export const skills = pgTable("skills", {
   order: integer("order").default(0).notNull(),
 });
 
+export const profile = pgTable("profile", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().default("Jeevan Adhikari"),
+  role: varchar("role", { length: 200 }).notNull().default("Full Stack Engineer"),
+  tagline: text("tagline").default("Building things for the web & beyond."),
+  bio: text("bio"),
+  availabilityStatus: varchar("availability_status", { length: 50 }).notNull().default("available"),
+  // 'available' | 'employed' | 'freelancing' | 'busy' | 'open_to_offers'
+  currentCompany: varchar("current_company", { length: 200 }),
+  currentCompanyUrl: text("current_company_url"),
+  workType: varchar("work_type", { length: 50 }).notNull().default("fulltime"),
+  // 'freelance' | 'fulltime' | 'both' | 'none'
+  openToWork: boolean("open_to_work").notNull().default(true),
+  location: varchar("location", { length: 100 }).default("Nepal"),
+  githubUrl: text("github_url").default("https://github.com/boyScavedo"),
+  youtubeUrl: text("youtube_url"),
+  twitterUrl: text("twitter_url"),
+  linkedinUrl: text("linkedin_url"),
+  resumeUrl: text("resume_url"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const messages = pgTable("messages", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),

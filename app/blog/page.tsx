@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { posts } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { formatDate, readingTime } from "@/lib/utils";
-import ScrollReveal from "@/components/scroll-reveal";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/animated-section";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -17,48 +17,45 @@ export default async function BlogPage() {
 
   return (
     <div className="flex flex-col pt-24">
-      <section className="relative px-6 py-20 noise overflow-hidden">
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#d4f600]/5 rounded-full blur-[100px] pointer-events-none" />
+      <section className="relative px-6 py-20 overflow-hidden">
+        <div className="absolute bottom-0 right-0 pointer-events-none" style={{ background: "radial-gradient(500px circle at 100% 100%, rgba(212,246,0,0.04), transparent)" }} />
         <div className="mx-auto max-w-4xl relative z-10">
-          <ScrollReveal>
-            <p className="text-xs text-[#555] uppercase tracking-widest mb-2">Writing</p>
-            <h1 className="text-[clamp(2.5rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight">
+          <FadeUp>
+            <p className="text-xs text-[#d4f600] font-mono mb-2">03 /</p>
+            <h1 className="text-[clamp(3rem,8vw,7rem)] font-black leading-[0.9] tracking-tight">
               The<br /><span className="text-[#d4f600]">Blog</span>
             </h1>
-            <p className="text-[#555] mt-4">
-              {allPosts.length} post{allPosts.length !== 1 ? "s" : ""} — thoughts, tutorials, and learnings.
+            <p className="text-[#555] mt-4 text-lg">
+              {allPosts.length} post{allPosts.length !== 1 ? "s" : ""} on software, ideas, and learnings.
             </p>
-          </ScrollReveal>
+          </FadeUp>
 
           {allTags.length > 0 && (
-            <ScrollReveal delay={100}>
+            <FadeUp delay={1}>
               <div className="flex flex-wrap gap-2 mt-8">
                 {allTags.map((tag) => (
-                  <span key={tag} className="rounded-full border border-[#2a2a2a] bg-[#111] px-3 py-1 text-xs text-[#888]">
+                  <span key={tag} className="rounded-full border border-[#2a2a2a] bg-[#0d0d0d] px-3 py-1 text-xs text-[#666] hover:border-[#d4f600]/40 hover:text-[#d4f600] transition-colors cursor-default">
                     {tag}
                   </span>
                 ))}
               </div>
-            </ScrollReveal>
+            </FadeUp>
           )}
         </div>
       </section>
 
       <section className="mx-auto max-w-4xl px-6 pb-24 w-full">
         {allPosts.length === 0 ? (
-          <ScrollReveal>
-            <div className="rounded-2xl border border-[#1a1a1a] bg-[#111] p-16 text-center text-[#555]">
+          <FadeUp>
+            <div className="rounded-2xl border border-[#1a1a1a] bg-[#0d0d0d] p-16 text-center text-[#555]">
               No posts yet. Check back soon.
             </div>
-          </ScrollReveal>
+          </FadeUp>
         ) : (
-          <div className="space-y-3">
-            {allPosts.map((post, i) => (
-              <ScrollReveal key={post.id} delay={i * 50}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="group flex items-center justify-between rounded-2xl border border-[#1a1a1a] bg-[#111] p-6 hover:border-[#d4f600]/40 transition-all hover:-translate-y-0.5 gap-4"
-                >
+          <StaggerContainer className="space-y-3">
+            {allPosts.map((post) => (
+              <StaggerItem key={post.id}>
+                <Link href={`/blog/${post.slug}`} className="group flex items-center justify-between rounded-2xl border border-[#1a1a1a] bg-[#0d0d0d] p-6 hover:border-[#d4f600]/30 hover:bg-[#111] transition-all gap-4">
                   <div className="space-y-2 min-w-0">
                     <div className="flex items-center gap-3 text-xs text-[#555]">
                       {post.publishedAt && <time dateTime={post.publishedAt.toISOString()}>{formatDate(post.publishedAt)}</time>}
@@ -68,17 +65,15 @@ export default async function BlogPage() {
                     {post.excerpt && <p className="text-sm text-[#555] line-clamp-2">{post.excerpt}</p>}
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {(post.tags ?? []).map((tag) => (
-                        <span key={tag} className="rounded-full bg-[#1a1a1a] border border-[#2a2a2a] px-2 py-0.5 text-xs text-[#666]">
-                          {tag}
-                        </span>
+                        <span key={tag} className="rounded-full bg-[#1a1a1a] border border-[#2a2a2a] px-2 py-0.5 text-xs text-[#555]">{tag}</span>
                       ))}
                     </div>
                   </div>
-                  <span className="text-[#555] group-hover:text-[#d4f600] transition-colors flex-shrink-0 text-xl">→</span>
+                  <span className="text-[#555] group-hover:text-[#d4f600] group-hover:translate-x-1 transition-all flex-shrink-0 text-xl">→</span>
                 </Link>
-              </ScrollReveal>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         )}
       </section>
     </div>
