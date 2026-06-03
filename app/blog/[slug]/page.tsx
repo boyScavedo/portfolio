@@ -9,6 +9,8 @@ import remarkGfm from "remark-gfm";
 import LikeButton from "./like-button";
 import CommentSection from "./comment-section";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

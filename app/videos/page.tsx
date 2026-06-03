@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getLatestVideos } from "@/lib/youtube";
 import VideoList from "./video-list";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Videos",
   description: "Latest YouTube videos by Jeevan Adhikari.",

@@ -4,6 +4,8 @@ import { projects } from "@/db/schema";
 import { asc } from "drizzle-orm";
 import ProjectList from "./project-list";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Projects",
   description: "Things I build and use — personal tools, experiments, and side projects.",

@@ -7,6 +7,8 @@ import PostList from "./post-list";
 
 type Post = InferSelectModel<typeof posts>;
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog",
   description: "Thoughts, tutorials, and ideas on software development.",

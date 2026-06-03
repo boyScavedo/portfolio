@@ -8,6 +8,8 @@ import Marquee from "@/components/marquee";
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/animated-section";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About",
   description: "Learn about Jeevan Adhikari — full stack engineer, creator, and blogger.",

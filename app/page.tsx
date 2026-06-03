@@ -4,6 +4,12 @@ import { db } from "@/db";
 import { posts, projects } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { formatDate, readingTime } from "@/lib/utils";
+import { getProfile } from "@/lib/profile";
+import Hero from "@/components/hero";
+import Marquee from "@/components/marquee";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/animated-section";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Jeevan Adhikari — Full Stack Engineer",
@@ -16,10 +22,6 @@ export const metadata: Metadata = {
     canonical: process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000",
   },
 };
-import { getProfile } from "@/lib/profile";
-import Hero from "@/components/hero";
-import Marquee from "@/components/marquee";
-import { FadeUp, StaggerContainer, StaggerItem } from "@/components/animated-section";
 
 const FALLBACK_TECH = ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "Tailwind CSS", "Docker", "REST APIs", "Git"];
 const FALLBACK_MARQUEE = ["ship fast", "learn daily", "build in public", "stay curious", "write code", "share knowledge"];
