@@ -2,9 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 async function verifyAdminToken(token: string): Promise<boolean> {
   const secret = process.env.ADMIN_SECRET ?? "change-me";
-  const parts = token.split(".");
-  if (parts.length !== 2) return false;
-  const [value, sig] = parts;
+
+  // Token format: "admin:EXPIRY.HEXSIG" — split on last dot
+  const lastDot = token.lastIndexOf(".");
+  if (lastDot === -1) return false;
+  const payload = token.slice(0, lastDot);
+  const sig = token.slice(lastDot + 1);
+
+  // Check expiry embedded in payload ("admin:TIMESTAMP")
+  const colonIdx = payload.lastIndexOf(":");
+  if (colonIdx === -1) return false;
+  const exp = parseInt(payload.slice(colonIdx + 1), 10);
+  if (isNaN(exp) || Date.now() > exp) return false;
 
   const key = await crypto.subtle.importKey(
     "raw",
@@ -17,7 +26,7 @@ async function verifyAdminToken(token: string): Promise<boolean> {
   const sigBytes = Uint8Array.from(
     sig.match(/.{1,2}/g)?.map((b) => parseInt(b, 16)) ?? []
   );
-  const data = new TextEncoder().encode(value);
+  const data = new TextEncoder().encode(payload);
 
   return crypto.subtle.verify("HMAC", key, sigBytes, data);
 }
