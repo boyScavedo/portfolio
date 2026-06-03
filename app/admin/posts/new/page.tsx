@@ -1,6 +1,8 @@
 import Link from "next/link";
 import PostForm from "../post-form";
 
+export const dynamic = "force-dynamic";
+
 export default function NewPostPage() {
   return (
     <div className="space-y-6">

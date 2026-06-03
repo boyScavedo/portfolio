@@ -5,6 +5,8 @@ import { desc } from "drizzle-orm";
 import { formatDate } from "@/lib/utils";
 import MessageActions from "./message-actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminMessagesPage() {
   const all = await db.select().from(messages).orderBy(desc(messages.createdAt));
   const unread = all.filter((m) => !m.read).length;

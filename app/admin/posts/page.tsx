@@ -5,6 +5,8 @@ import { desc } from "drizzle-orm";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "./delete-button";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPostsPage() {
   const all = await db.select().from(posts).orderBy(desc(posts.createdAt));
 

@@ -5,6 +5,8 @@ import { eq, desc } from "drizzle-orm";
 import { formatDate } from "@/lib/utils";
 import CommentActions from "./comment-actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCommentsPage() {
   const all = await db
     .select({ comment: comments, postTitle: posts.title, postSlug: posts.slug })

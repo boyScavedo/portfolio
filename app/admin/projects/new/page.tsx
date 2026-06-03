@@ -1,6 +1,8 @@
 import Link from "next/link";
 import ProjectForm from "../project-form";
 
+export const dynamic = "force-dynamic";
+
 export default function NewProjectPage() {
   return (
     <div className="space-y-6">

@@ -5,6 +5,8 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import PostForm from "../post-form";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ id: string }> };
 
 export default async function EditPostPage({ params }: Props) {

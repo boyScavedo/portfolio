@@ -3,6 +3,8 @@ import ContactForm from "./contact-form";
 import { FadeUp } from "@/components/animated-section";
 import { getProfile } from "@/lib/profile";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Jeevan Adhikari.",

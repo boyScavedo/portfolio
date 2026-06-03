@@ -4,6 +4,8 @@ import { skills } from "@/db/schema";
 import { asc } from "drizzle-orm";
 import SkillsManager from "./skills-manager";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSkillsPage() {
   const all = await db.select().from(skills).orderBy(asc(skills.order));
 

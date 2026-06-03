@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getProfile } from "@/lib/profile";
 import ProfileForm from "./profile-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProfilePage() {
   const profile = await getProfile();
   return (

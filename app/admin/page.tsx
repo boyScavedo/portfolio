@@ -4,6 +4,8 @@ import { posts, projects, comments, skills, messages } from "@/db/schema";
 import { eq, count } from "drizzle-orm";
 import LogoutButton from "./logout-button";
 
+export const dynamic = "force-dynamic";
+
 async function getStats() {
   try {
     const [[postCount], [projectCount], [pendingComments], [skillCount], [unreadMessages]] = await Promise.all([
