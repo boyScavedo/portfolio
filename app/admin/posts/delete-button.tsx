@@ -18,7 +18,7 @@ export default function DeleteButton({ id, endpoint }: { id: number; endpoint: s
   return (
     <button
       onClick={handleDelete}
-      className="rounded-lg border border-red-200 dark:border-red-800 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+      className="rounded-lg border border-red-900/50 px-3 py-1.5 text-xs text-red-500 hover:bg-red-950/30 transition-colors"
     >
       Delete
     </button>

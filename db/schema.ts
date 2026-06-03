@@ -52,3 +52,13 @@ export const skills = pgTable("skills", {
   level: integer("level").default(80),
   order: integer("order").default(0).notNull(),
 });
+
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 255 }),
+  body: text("body").notNull(),
+  read: boolean("read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (t) => [index("messages_read_idx").on(t.read)]);

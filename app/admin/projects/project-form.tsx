@@ -55,9 +55,9 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
       <Field label="Title *" value={form.title} onChange={(v) => set("title", v)} required />
       <Field label="Short description *" value={form.description} onChange={(v) => set("description", v)} required />
       <div className="space-y-1">
-        <label className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Long description</label>
+        <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Long description</label>
         <textarea rows={4} value={form.longDescription} onChange={(e) => set("longDescription", e.target.value)}
-          className="w-full rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" />
+          className="w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors resize-none" />
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Image URL" value={form.imageUrl} onChange={(v) => set("imageUrl", v)} placeholder="https://..." />
@@ -65,9 +65,9 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
         <Field label="Demo URL" value={form.demoUrl} onChange={(v) => set("demoUrl", v)} placeholder="https://..." />
         <Field label="GitHub URL" value={form.githubUrl} onChange={(v) => set("githubUrl", v)} placeholder="https://github.com/..." />
         <div className="space-y-1">
-          <label className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Order</label>
+          <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Order</label>
           <input type="number" value={form.order} onChange={(e) => set("order", Number(e.target.value))}
-            className="w-full rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            className="w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors" />
         </div>
       </div>
       <label className="flex items-center gap-2 cursor-pointer">
@@ -75,10 +75,10 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
         <span className="text-sm font-medium">Featured on homepage</span>
       </label>
       <div className="flex gap-3">
-        <button type="submit" disabled={saving} className="rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-sm font-medium text-white dark:text-neutral-900 hover:bg-neutral-700 transition-colors disabled:opacity-50">
+        <button type="submit" disabled={saving} className="rounded-full bg-[#d4f600] text-black px-6 py-2.5 text-sm font-bold hover:bg-white transition-colors disabled:opacity-50">
           {saving ? "Saving…" : "Save project"}
         </button>
-        <button type="button" onClick={() => router.back()} className="rounded-lg border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
+        <button type="button" onClick={() => router.back()} className="rounded-full border border-[#2a2a2a] px-6 py-2.5 text-sm text-[#555] hover:border-[#d4f600]/40 hover:text-[#d4f600] transition-colors">
           Cancel
         </button>
       </div>
@@ -89,9 +89,9 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
 function Field({ label, value, onChange, placeholder, required }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; required?: boolean }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-medium text-neutral-600 dark:text-neutral-400">{label}</label>
+      <label className="text-xs font-medium text-[#555] uppercase tracking-wider">{label}</label>
       <input required={required} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        className="w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors" />
     </div>
   );
 }

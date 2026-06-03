@@ -30,12 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const [post] = await db
-    .select()
-    .from(posts)
-    .where(and(eq(posts.slug, slug), eq(posts.published, true)))
-    .limit(1);
-
+  const [post] = await db.select().from(posts).where(and(eq(posts.slug, slug), eq(posts.published, true))).limit(1);
   if (!post) notFound();
 
   const [approvedComments, likeCount] = await Promise.all([
@@ -44,38 +39,39 @@ export default async function BlogPostPage({ params }: Props) {
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16">
+    <div className="mx-auto max-w-3xl px-6 pt-32 pb-20">
       <article>
-        <header className="mb-10 space-y-4">
-          <div className="flex flex-wrap gap-1">
+        <header className="mb-12 space-y-5">
+          <div className="flex flex-wrap gap-2">
             {(post.tags ?? []).map((tag) => (
-              <span key={tag} className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs">
+              <span key={tag} className="rounded-full border border-[#2a2a2a] bg-[#111] px-3 py-1 text-xs text-[#888]">
                 {tag}
               </span>
             ))}
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-snug">{post.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400">
+          <h1 className="text-3xl sm:text-5xl font-bold leading-tight tracking-tight">{post.title}</h1>
+          <div className="flex items-center gap-4 text-sm text-[#555]">
             {post.publishedAt && (
               <time dateTime={post.publishedAt.toISOString()}>{formatDate(post.publishedAt)}</time>
             )}
+            <span className="w-1 h-1 rounded-full bg-[#333]" />
             <span>{readingTime(post.content)} min read</span>
           </div>
           {post.coverUrl && (
-            <img src={post.coverUrl} alt={post.title} className="w-full rounded-xl object-cover max-h-80" />
+            <img src={post.coverUrl} alt={post.title} className="w-full rounded-2xl object-cover max-h-80 border border-[#1a1a1a]" />
           )}
         </header>
 
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
+        <div className="prose prose-lg max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
         </div>
 
-        <div className="mt-10 pt-8 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="mt-10 pt-8 border-t border-[#1a1a1a]">
           <LikeButton postId={post.id} initialCount={likeCount[0]?.count ?? 0} />
         </div>
       </article>
 
-      <section className="mt-16">
+      <section className="mt-16 pt-8 border-t border-[#1a1a1a]">
         <CommentSection postId={post.id} comments={approvedComments} />
       </section>
     </div>

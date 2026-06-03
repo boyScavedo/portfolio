@@ -16,10 +16,7 @@ export default function LikeButton({ postId, initialCount }: { postId: number; i
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ postId }),
       });
-      if (res.ok) {
-        setCount((c) => c + 1);
-        setLiked(true);
-      }
+      if (res.ok) { setCount((c) => c + 1); setLiked(true); }
     } finally {
       setLoading(false);
     }
@@ -29,10 +26,10 @@ export default function LikeButton({ postId, initialCount }: { postId: number; i
     <button
       onClick={handleLike}
       disabled={liked || loading}
-      className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+      className={`flex items-center gap-2 rounded-full border px-6 py-2.5 text-sm font-bold transition-all ${
         liked
-          ? "border-red-300 bg-red-50 text-red-600 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
-          : "border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900"
+          ? "border-[#d4f600] bg-[#d4f600]/10 text-[#d4f600]"
+          : "border-[#333] text-[#888] hover:border-[#d4f600] hover:text-[#d4f600]"
       }`}
     >
       <svg className="w-4 h-4" fill={liked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
