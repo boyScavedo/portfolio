@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
     githubUrl: body.githubUrl || null,
     tags: body.tags || [],
     featured: body.featured ?? false,
+    status: body.status ?? "active",
     order: body.order ?? 0,
   }).returning();
   return NextResponse.json(project);
@@ -39,6 +40,7 @@ export async function PUT(req: NextRequest) {
     githubUrl: body.githubUrl,
     tags: body.tags,
     featured: body.featured,
+    status: body.status ?? "active",
     order: body.order,
   }).where(eq(projects.id, body.id)).returning();
   return NextResponse.json(project);

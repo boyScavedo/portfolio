@@ -13,8 +13,16 @@ type Project = {
   githubUrl: string;
   tags: string;
   featured: boolean;
+  status: string;
   order: number;
 };
+
+const STATUS_OPTIONS = [
+  { value: "active", label: "Active — currently using/shipping" },
+  { value: "personal", label: "Personal — for personal use" },
+  { value: "planned", label: "Planned — want to build" },
+  { value: "scrapped", label: "Scrapped — abandoned" },
+];
 
 export default function ProjectForm({ initial }: { initial?: Partial<Project> }) {
   const router = useRouter();
@@ -27,13 +35,16 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
     githubUrl: initial?.githubUrl ?? "",
     tags: Array.isArray(initial?.tags) ? (initial.tags as unknown as string[]).join(", ") : (initial?.tags ?? ""),
     featured: initial?.featured ?? false,
+    status: (initial as Record<string, unknown>)?.status as string ?? "active",
     order: initial?.order ?? 0,
   });
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setError("");
     const payload = {
       ...form,
       id: initial?.id,
@@ -46,18 +57,24 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
     });
     setSaving(false);
     if (res.ok) { router.push("/admin/projects"); router.refresh(); }
+    else setError("Failed to save. Check the console.");
   }
 
   const set = (k: keyof Project, v: string | boolean | number) => setForm((f) => ({ ...f, [k]: v }));
 
+  const inputClass = "w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors";
+  const labelClass = "text-xs font-medium text-[#555] uppercase tracking-wider";
+
   return (
     <form onSubmit={submit} className="space-y-5">
+      {error && <p className="text-sm text-red-400 rounded-xl border border-red-500/30 bg-red-500/10 p-3">{error}</p>}
       <Field label="Title *" value={form.title} onChange={(v) => set("title", v)} required />
       <Field label="Short description *" value={form.description} onChange={(v) => set("description", v)} required />
       <div className="space-y-1">
-        <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Long description</label>
-        <textarea rows={4} value={form.longDescription} onChange={(e) => set("longDescription", e.target.value)}
-          className="w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors resize-none" />
+        <label className={labelClass}>Long description (Markdown supported)</label>
+        <textarea rows={8} value={form.longDescription} onChange={(e) => set("longDescription", e.target.value)}
+          placeholder="# Project Name&#10;&#10;Describe the project in detail. Markdown is supported."
+          className={`${inputClass} resize-y font-mono text-xs`} />
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Image URL" value={form.imageUrl} onChange={(v) => set("imageUrl", v)} placeholder="https://..." />
@@ -65,13 +82,18 @@ export default function ProjectForm({ initial }: { initial?: Partial<Project> })
         <Field label="Demo URL" value={form.demoUrl} onChange={(v) => set("demoUrl", v)} placeholder="https://..." />
         <Field label="GitHub URL" value={form.githubUrl} onChange={(v) => set("githubUrl", v)} placeholder="https://github.com/..." />
         <div className="space-y-1">
-          <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Order</label>
-          <input type="number" value={form.order} onChange={(e) => set("order", Number(e.target.value))}
-            className="w-full rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors" />
+          <label className={labelClass}>Status</label>
+          <select value={form.status} onChange={(e) => set("status", e.target.value)} className={inputClass}>
+            {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <label className={labelClass}>Order</label>
+          <input type="number" value={form.order} onChange={(e) => set("order", Number(e.target.value))} className={inputClass} />
         </div>
       </div>
       <label className="flex items-center gap-2 cursor-pointer">
-        <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} />
+        <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-[#d4f600]" />
         <span className="text-sm font-medium">Featured on homepage</span>
       </label>
       <div className="flex gap-3">

@@ -6,9 +6,12 @@ import { eq } from "drizzle-orm";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
-  const [allPosts] = await Promise.all([
-    db.select({ slug: posts.slug, updatedAt: posts.updatedAt }).from(posts).where(eq(posts.published, true)),
-  ]);
+  let allPosts: { slug: string; updatedAt: Date }[] = [];
+  try {
+    allPosts = await db.select({ slug: posts.slug, updatedAt: posts.updatedAt }).from(posts).where(eq(posts.published, true));
+  } catch {
+    allPosts = [];
+  }
 
   return [
     { url: base, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },

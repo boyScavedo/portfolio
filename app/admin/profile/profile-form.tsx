@@ -26,6 +26,9 @@ export default function ProfileForm({ initial }: { initial: Profile }) {
     role: initial.role ?? "Full Stack Engineer",
     tagline: initial.tagline ?? "",
     bio: initial.bio ?? "",
+    aboutParagraph2: (initial as Record<string, unknown>).aboutParagraph2 as string ?? "",
+    aboutParagraph3: (initial as Record<string, unknown>).aboutParagraph3 as string ?? "",
+    techStack: Array.isArray((initial as Record<string, unknown>).techStack) ? ((initial as Record<string, unknown>).techStack as string[]).join(", ") : "",
     availabilityStatus: initial.availabilityStatus ?? "available",
     currentCompany: initial.currentCompany ?? "",
     currentCompanyUrl: initial.currentCompanyUrl ?? "",
@@ -51,7 +54,11 @@ export default function ProfileForm({ initial }: { initial: Profile }) {
     const res = await fetch("/api/admin/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, openToWork: form.availabilityStatus !== "busy" && form.availabilityStatus !== "employed" }),
+      body: JSON.stringify({
+        ...form,
+        openToWork: form.availabilityStatus !== "busy" && form.availabilityStatus !== "employed",
+        techStack: form.techStack.split(",").map((t: string) => t.trim()).filter(Boolean),
+      }),
     });
     setSaving(false);
     if (res.ok) { setSaved(true); router.refresh(); }
@@ -133,8 +140,26 @@ export default function ProfileForm({ initial }: { initial: Profile }) {
           <input value={form.tagline} onChange={set("tagline")} placeholder="Building things for the web & beyond." className={inputClass} />
         </div>
         <div>
-          <label className={labelClass}>Bio (shown on about page)</label>
-          <textarea rows={4} value={form.bio} onChange={set("bio")} placeholder="A few sentences about yourself..." className={`${inputClass} resize-none`} />
+          <label className={labelClass}>Bio — first paragraph on about page</label>
+          <textarea rows={3} value={form.bio} onChange={set("bio")} placeholder="A few sentences about yourself..." className={`${inputClass} resize-none`} />
+        </div>
+        <div>
+          <label className={labelClass}>About — second paragraph</label>
+          <textarea rows={3} value={form.aboutParagraph2} onChange={set("aboutParagraph2")} placeholder="Focus areas, philosophy..." className={`${inputClass} resize-none`} />
+        </div>
+        <div>
+          <label className={labelClass}>About — third paragraph</label>
+          <textarea rows={3} value={form.aboutParagraph3} onChange={set("aboutParagraph3")} placeholder="Hobbies, interests outside work..." className={`${inputClass} resize-none`} />
+        </div>
+      </div>
+
+      {/* Tech stack ribbon */}
+      <div className="rounded-2xl border border-[#1a1a1a] bg-[#0d0d0d] p-6 space-y-4">
+        <h2 className="font-bold text-lg">Tech Stack Ribbon</h2>
+        <p className="text-xs text-[#555]">Items shown in the scrolling banner on the homepage. Comma-separated.</p>
+        <div>
+          <label className={labelClass}>Tech stack items</label>
+          <input value={form.techStack} onChange={set("techStack")} placeholder="React, Next.js, TypeScript, Node.js..." className={inputClass} />
         </div>
       </div>
 

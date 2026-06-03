@@ -1,7 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { signToken } from "@/lib/auth";
+import { rateLimit } from "@/lib/rate-limit";
+
+function getIp(req: NextRequest): string {
+  return req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "unknown";
+}
 
 export async function POST(req: NextRequest) {
+  const ip = getIp(req);
+  // 5 attempts per 15 minutes per IP — blocks Burp Intruder brute-force
+  if (!rateLimit(`login:${ip}`, 5, 15 * 60_000)) {
+    return NextResponse.json({ error: "Too many attempts. Try again later." }, { status: 429 });
+  }
+
   const { password } = await req.json();
   const adminPassword = process.env.ADMIN_PASSWORD;
 

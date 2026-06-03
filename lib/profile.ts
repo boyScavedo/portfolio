@@ -19,6 +19,10 @@ const DEFAULT_PROFILE: Omit<Profile, "id" | "updatedAt"> = {
   twitterUrl: null,
   linkedinUrl: null,
   resumeUrl: null,
+  techStack: ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "Tailwind CSS", "Docker"],
+  marqueeItems: null,
+  aboutParagraph2: "My focus is on building fast, accessible, and well-designed web applications. I believe in learning in public and sharing knowledge freely.",
+  aboutParagraph3: "When I'm not coding, I'm exploring new technologies, writing blog posts, or filming videos about software development.",
 };
 
 export async function getProfile(): Promise<Profile> {
@@ -31,10 +35,4 @@ export async function getProfile(): Promise<Profile> {
   return { id: 1, updatedAt: new Date(), ...DEFAULT_PROFILE };
 }
 
-export const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  available: { label: "Available for work", color: "#22c55e" },
-  employed: { label: "Currently employed", color: "#888" },
-  freelancing: { label: "Freelancing", color: "#d4f600" },
-  busy: { label: "Not available", color: "#ef4444" },
-  open_to_offers: { label: "Open to offers", color: "#f59e0b" },
-};
+export { STATUS_LABELS } from "@/lib/profile-constants";

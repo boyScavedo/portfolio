@@ -11,10 +11,21 @@ export async function GET() {
   return NextResponse.json(all);
 }
 
+async function uniqueSlug(base: string): Promise<string> {
+  const { eq } = await import("drizzle-orm");
+  const existing = await db.select({ slug: posts.slug }).from(posts).where(eq(posts.slug, base));
+  if (existing.length === 0) return base;
+  const suffix = Date.now().toString(36);
+  const candidate = `${base}-${suffix}`;
+  const exists2 = await db.select({ slug: posts.slug }).from(posts).where(eq(posts.slug, candidate));
+  return exists2.length === 0 ? candidate : `${base}-${Date.now()}`;
+}
+
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const slug = body.slug || slugify(body.title);
+  const baseSlug = body.slug || slugify(body.title);
+  const slug = await uniqueSlug(baseSlug);
   const [post] = await db.insert(posts).values({
     title: body.title,
     slug,

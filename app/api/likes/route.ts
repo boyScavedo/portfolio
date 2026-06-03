@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { likes } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
+import { rateLimit } from "@/lib/rate-limit";
 
 function getIp(req: NextRequest): string {
   return (
@@ -12,10 +13,13 @@ function getIp(req: NextRequest): string {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getIp(req);
+  if (!rateLimit(`like:${ip}`, 20, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const { postId } = await req.json();
   if (!postId) return NextResponse.json({ error: "Missing postId" }, { status: 400 });
-
-  const ip = getIp(req);
 
   const existing = await db
     .select()
@@ -24,9 +28,10 @@ export async function POST(req: NextRequest) {
     .limit(1);
 
   if (existing.length > 0) {
-    return NextResponse.json({ error: "Already liked" }, { status: 409 });
+    await db.delete(likes).where(and(eq(likes.postId, postId), eq(likes.ip, ip)));
+    return NextResponse.json({ ok: true, action: "unliked" });
   }
 
   await db.insert(likes).values({ postId, ip });
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, action: "liked" });
 }

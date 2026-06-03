@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { motion, useAnimationControls } from "framer-motion";
+import { motion, useMotionValue, animate } from "framer-motion";
 
 type MarqueeProps = {
   items: string[];
@@ -10,31 +10,58 @@ type MarqueeProps = {
   reverse?: boolean;
 };
 
-export default function Marquee({ items, speed = 30, accent = false, reverse = false }: MarqueeProps) {
-  const controls = useAnimationControls();
-  const duration = items.length * speed;
-  const doubled = [...items, ...items, ...items, ...items];
+export default function Marquee({ items, speed = 18, accent = false, reverse = false }: MarqueeProps) {
+  const x = useMotionValue(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<ReturnType<typeof animate> | null>(null);
+  const doubled = [...items, ...items];
 
-  const startAnim = () =>
-    controls.start({
-      x: reverse ? ["0%", "50%"] : ["0%", "-50%"],
-      transition: { duration, ease: "linear", repeat: Infinity, repeatType: "loop" },
+  function startAnim() {
+    if (!containerRef.current) return;
+    animRef.current?.stop();
+
+    const halfWidth = containerRef.current.scrollWidth / 2;
+    const current = x.get();
+    const target = reverse ? 0 : -halfWidth;
+    const reset = reverse ? -halfWidth : 0;
+    const totalDuration = items.length * speed;
+    const remaining = Math.abs(target - current);
+    const duration = (remaining / halfWidth) * totalDuration;
+
+    animRef.current = animate(x, target, {
+      duration,
+      ease: "linear",
+      onComplete: () => {
+        x.set(reset);
+        startAnim();
+      },
     });
+  }
 
   useEffect(() => {
-    startAnim();
+    const t = setTimeout(() => {
+      if (containerRef.current && reverse) {
+        x.set(-containerRef.current.scrollWidth / 2);
+      }
+      startAnim();
+    }, 50);
+    return () => {
+      clearTimeout(t);
+      animRef.current?.stop();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div
       className="overflow-hidden border-y border-[#1a1a1a] py-4 select-none cursor-default"
-      onMouseEnter={() => controls.stop()}
+      onMouseEnter={() => animRef.current?.stop()}
       onMouseLeave={() => startAnim()}
     >
       <motion.div
+        ref={containerRef}
         className="flex gap-10 whitespace-nowrap w-max"
-        animate={controls}
+        style={{ x }}
       >
         {doubled.map((item, i) => (
           <span

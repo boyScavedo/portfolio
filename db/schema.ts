@@ -20,7 +20,8 @@ export const comments = pgTable("comments", {
   name: varchar("name", { length: 100 }).notNull(),
   email: varchar("email", { length: 255 }),
   body: text("body").notNull(),
-  approved: boolean("approved").default(false).notNull(),
+  approved: boolean("approved").default(true).notNull(),
+  reported: boolean("reported").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (t) => [index("comments_post_idx").on(t.postId)]);
 
@@ -41,6 +42,7 @@ export const projects = pgTable("projects", {
   githubUrl: text("github_url"),
   tags: text("tags").array().default([]),
   featured: boolean("featured").default(false).notNull(),
+  status: varchar("status", { length: 50 }).default("active").notNull(),
   order: integer("order").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -72,6 +74,10 @@ export const profile = pgTable("profile", {
   twitterUrl: text("twitter_url"),
   linkedinUrl: text("linkedin_url"),
   resumeUrl: text("resume_url"),
+  techStack: text("tech_stack").array(),
+  marqueeItems: text("marquee_items").array(),
+  aboutParagraph2: text("about_paragraph2"),
+  aboutParagraph3: text("about_paragraph3"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
