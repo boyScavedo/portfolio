@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Learn about Jeevan Adhikari — full stack engineer, creator, and blogger.",
+  description: "Learn about Jeevan Adhikari - full stack engineer, creator, and blogger.",
 };
 
 export default async function AboutPage() {
@@ -47,7 +47,7 @@ export default async function AboutPage() {
             </div>
             <div className="p-4 space-y-3 font-mono text-sm text-[#888] leading-relaxed">
               <p>
-                hi, i&apos;m <span className="text-[#e0e0e0] font-bold">{profile.name}</span> —{" "}
+                hi, i&apos;m <span className="text-[#e0e0e0] font-bold">{profile.name}</span> -{" "}
                 {profile.bio ?? "a developer passionate about building useful things for the web."}
               </p>
               {profile.aboutParagraph2 && <p>{profile.aboutParagraph2}</p>}
@@ -163,7 +163,7 @@ export default async function AboutPage() {
           <div className="space-y-1">
             <p className="text-[10px] font-mono text-[#555] uppercase tracking-widest">// collaborate</p>
             <h3 className="font-mono font-black text-xl text-[#e0e0e0]">want to work together?</h3>
-            <p className="text-xs font-mono text-[#555]">reach out anytime — usually respond within 24h.</p>
+            <p className="text-xs font-mono text-[#555]">reach out anytime - usually respond within 24h.</p>
           </div>
           <Link href="/contact" className="flex-shrink-0 rounded-[2px] bg-[#d4f600] text-black px-6 py-2.5 text-xs font-mono font-bold hover:bg-white transition-colors whitespace-nowrap">
             let&apos;s talk →

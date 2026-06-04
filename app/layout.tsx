@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Cursor from "@/components/cursor";
+import { getProfile } from "@/lib/profile";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -21,26 +22,25 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   title: {
-    default: "Jeevan Adhikari — Full Stack Engineer",
+    default: "Jeevan Adhikari - Full Stack Engineer",
     template: "%s | Jeevan Adhikari",
   },
   description:
-    "Jeevan Adhikari is a full stack engineer and developer from Nepal. Explore Jeevan's projects, blog posts, and engineering work.",
+    "Jeevan Adhikari is a full stack engineer and developer from Nepal. Explore projects, blog posts, and engineering work.",
   metadataBase: new URL(BASE_URL),
   keywords: [
-    "Jeevan",
     "Jeevan Adhikari",
-    "Jeevan developer",
-    "Jeevan engineer",
-    "Jeevan full stack",
-    "Jeevan Nepal",
-    "Jeevan Adhikari portfolio",
-    "Jeevan Adhikari developer",
-    "Jeevan Adhikari engineer",
     "full stack engineer Nepal",
-    "Next.js developer Nepal",
+    "Next.js developer",
     "React developer",
+    "TypeScript developer",
+    "web developer Nepal",
+    "portfolio",
+    "Nepali developer",
     "boyScavedo",
+    "software engineer",
+    "Node.js developer",
+    "freelance developer Nepal",
   ],
   authors: [{ name: "Jeevan Adhikari", url: BASE_URL }],
   creator: "Jeevan Adhikari",
@@ -53,16 +53,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Jeevan Adhikari",
-    title: "Jeevan Adhikari — Full Stack Engineer",
+    title: "Jeevan Adhikari - Full Stack Engineer",
     description: "Jeevan Adhikari is a full stack engineer and developer from Nepal. Explore projects, blog posts, and engineering work.",
     url: BASE_URL,
     locale: "en_US",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Jeevan Adhikari - Full Stack Engineer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jeevan Adhikari — Full Stack Engineer",
+    title: "Jeevan Adhikari - Full Stack Engineer",
     description: "Jeevan Adhikari is a full stack engineer and developer from Nepal.",
     creator: "@jeevanadh",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Jeevan Adhikari - Full Stack Engineer" }],
   },
   alternates: {
     canonical: BASE_URL,
@@ -72,11 +74,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const profile = await getProfile();
+  const sameAs = [
+    profile.githubUrl,
+    profile.twitterUrl,
+    profile.linkedinUrl,
+    profile.youtubeUrl,
+  ].filter((url): url is string => Boolean(url));
+
   return (
     <html
       lang="en"
@@ -90,15 +100,13 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Jeevan Adhikari",
-              alternateName: ["Jeevan", "Jeevan developer", "Jeevan engineer", "boyScavedo"],
+              alternateName: ["Jeevan", "Jeevan Adhikari", "boyScavedo"],
               url: BASE_URL,
-              jobTitle: "Full Stack Engineer",
-              description: "Jeevan Adhikari is a full stack engineer and developer from Nepal, specializing in React, Next.js, TypeScript, and Node.js.",
-              knowsAbout: ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "Full Stack Development"],
-              nationality: { "@type": "Country", name: "Nepal" },
-              sameAs: [
-                "https://github.com/boyScavedo",
-              ],
+              jobTitle: profile.role ?? "Full Stack Engineer",
+              description: profile.bio ?? "Jeevan Adhikari is a full stack engineer and developer from Nepal.",
+              knowsAbout: profile.techStack?.length ? profile.techStack : ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "Full Stack Development"],
+              nationality: { "@type": "Country", name: profile.location ?? "Nepal" },
+              sameAs: sameAs.length > 0 ? sameAs : undefined,
             }),
           }}
         />

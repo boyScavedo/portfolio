@@ -57,7 +57,7 @@ export default function Hero({ profile }: { profile: Profile }) {
           <span style={{ color: status.color }}>{status.label}</span>
           {profile.currentCompany && (
             <span className="text-[#444]">
-              — {profile.currentCompanyUrl ? (
+              - {profile.currentCompanyUrl ? (
                 <a href={profile.currentCompanyUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#d4f600] transition-colors">{profile.currentCompany}</a>
               ) : profile.currentCompany}
             </span>

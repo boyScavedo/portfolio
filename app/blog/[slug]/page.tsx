@@ -17,6 +17,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const [post] = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
   if (!post) return {};
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  const ogImage = post.coverUrl
+    ? { url: post.coverUrl, width: 1200, height: 630, alt: post.title }
+    : { url: `${base}/opengraph-image`, width: 1200, height: 630, alt: "Jeevan Adhikari" };
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
@@ -25,7 +29,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: post.excerpt ?? undefined,
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
-      images: post.coverUrl ? [post.coverUrl] : [],
+      authors: ["Jeevan Adhikari"],
+      tags: post.tags ?? undefined,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      images: [ogImage],
     },
   };
 }

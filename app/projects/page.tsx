@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Things I build and use — personal tools, experiments, and side projects.",
+  description: "Things I build and use - personal tools, experiments, and side projects.",
 };
 
 export default async function ProjectsPage() {

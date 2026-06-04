@@ -15,7 +15,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const [project] = await db.select().from(projects).where(eq(projects.id, Number(id))).limit(1);
   if (!project) return { title: "Project not found" };
-  return { title: project.title, description: project.description };
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  return {
+    title: project.title,
+    description: project.description,
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      images: project.imageUrl
+        ? [{ url: project.imageUrl, width: 1200, height: 630, alt: project.title }]
+        : [{ url: `${base}/opengraph-image`, width: 1200, height: 630, alt: "Jeevan Adhikari" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.description,
+      images: project.imageUrl
+        ? [{ url: project.imageUrl, alt: project.title }]
+        : [{ url: `${base}/opengraph-image`, alt: "Jeevan Adhikari" }],
+    },
+  };
 }
 
 export default async function ProjectDetailPage({ params }: Props) {

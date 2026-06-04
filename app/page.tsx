@@ -12,10 +12,8 @@ import { FadeUp, StaggerContainer, StaggerItem } from "@/components/animated-sec
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Jeevan Adhikari — Full Stack Engineer",
   description: "Jeevan Adhikari is a full stack engineer and developer from Nepal. I build fast, accessible web apps with React, Next.js, TypeScript and Node.js. Explore my projects, blog, and work.",
   openGraph: {
-    title: "Jeevan Adhikari — Full Stack Engineer",
     description: "Jeevan Adhikari is a full stack engineer from Nepal building things for the web.",
   },
   alternates: {

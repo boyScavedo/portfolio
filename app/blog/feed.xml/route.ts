@@ -48,7 +48,7 @@ ${categories}
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:content="http://purl.org/rss/modules/content/">
   <channel>
-    <title>Jeevan Adhikari — Blog</title>
+    <title>Jeevan Adhikari - Blog</title>
     <link>${base}/blog</link>
     <description>Thoughts, tutorials, and ideas on software development by Jeevan Adhikari.</description>
     <language>en-us</language>
