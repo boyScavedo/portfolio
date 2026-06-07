@@ -29,6 +29,7 @@ export const likes = pgTable("likes", {
   id: serial("id").primaryKey(),
   postId: integer("post_id").references(() => posts.id, { onDelete: "cascade" }).notNull(),
   ip: varchar("ip", { length: 45 }).notNull(),
+  active: boolean("active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (t) => [index("likes_post_ip_idx").on(t.postId, t.ip)]);
 

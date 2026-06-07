@@ -6,8 +6,20 @@ import { eq, and, count } from "drizzle-orm";
 import { formatDate, readingTime } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 import LikeButton from "./like-button";
 import CommentSection from "./comment-section";
+
+const markdownComponents: Components = {
+  a: ({ href, children, ...props }) => {
+    const isExternal = typeof href === "string" && (href.startsWith("http") || href.startsWith("//"));
+    return (
+      <a href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined} {...props}>
+        {children}
+      </a>
+    );
+  },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +61,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   const [approvedComments, likeCount] = await Promise.all([
     db.select().from(comments).where(and(eq(comments.postId, post.id), eq(comments.approved, true))),
-    db.select({ count: count() }).from(likes).where(eq(likes.postId, post.id)),
+    db.select({ count: count() }).from(likes).where(and(eq(likes.postId, post.id), eq(likes.active, true))),
   ]);
 
   return (
@@ -77,7 +89,7 @@ export default async function BlogPostPage({ params }: Props) {
         </header>
 
         <div className="prose prose-lg max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+          <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
         </div>
 
         <div className="mt-10 pt-8 border-t border-[#1a1a1a]">

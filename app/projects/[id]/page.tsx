@@ -5,7 +5,19 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 import type { Metadata } from "next";
+
+const markdownComponents: Components = {
+  a: ({ href, children, ...props }) => {
+    const isExternal = typeof href === "string" && (href.startsWith("http") || href.startsWith("//"));
+    return (
+      <a href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined} {...props}>
+        {children}
+      </a>
+    );
+  },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -108,7 +120,7 @@ export default async function ProjectDetailPage({ params }: Props) {
             prose-pre:bg-[#111] prose-pre:border prose-pre:border-[#1a1a1a]
             prose-blockquote:border-l-[#d4f600] prose-blockquote:text-[#888]
           ">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
               {project.longDescription}
             </ReactMarkdown>
           </div>
