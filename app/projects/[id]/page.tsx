@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
@@ -5,19 +6,8 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { Components } from "react-markdown";
+import { markdownComponents } from "@/lib/markdown";
 import type { Metadata } from "next";
-
-const markdownComponents: Components = {
-  a: ({ href, children, ...props }) => {
-    const isExternal = typeof href === "string" && (href.startsWith("http") || href.startsWith("//"));
-    return (
-      <a href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined} {...props}>
-        {children}
-      </a>
-    );
-  },
-};
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +97,9 @@ export default async function ProjectDetailPage({ params }: Props) {
         {/* Cover image */}
         {project.imageUrl && (
           <div className="rounded-2xl overflow-hidden border border-[#1a1a1a] mb-10">
-            <img src={project.imageUrl} alt={project.title} className="w-full object-cover max-h-[480px]" />
+            <div className="relative w-full h-[480px]">
+              <Image src={project.imageUrl} alt={project.title} fill className="object-cover" />
+            </div>
           </div>
         )}
 

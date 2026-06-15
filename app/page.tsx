@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/db";
 import { posts, projects } from "@/db/schema";
@@ -178,7 +179,9 @@ function ProjectCard({ project }: { project: { id: number; title: string; descri
   return (
     <Link href={`/projects/${project.id}`} className="group border border-[#1a1a1a] rounded-[2px] overflow-hidden hover:border-[#d4f600]/30 transition-all flex flex-col">
       {project.imageUrl ? (
-        <img src={project.imageUrl} alt={project.title} className="w-full h-36 object-cover" />
+        <div className="relative w-full h-36">
+          <Image src={project.imageUrl} alt={project.title} fill className="object-cover" />
+        </div>
       ) : (
         <div className="w-full h-16 bg-[#0d0d0d] flex items-center justify-center border-b border-[#1a1a1a]">
           <span className="font-mono font-black text-3xl text-[#1e1e1e] select-none">{project.title[0]}</span>

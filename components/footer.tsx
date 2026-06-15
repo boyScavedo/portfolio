@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { getProfile } from "@/lib/profile";
+import type { Profile } from "@/lib/profile";
 
-export default async function Footer() {
-  const profile = await getProfile();
+export default function Footer({ profile }: { profile: Profile }) {
 
   return (
     <footer className="border-t border-[#1a1a1a] mt-auto">

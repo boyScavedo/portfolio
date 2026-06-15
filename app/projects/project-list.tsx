@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import TagCombobox from "@/components/tag-combobox";
+import { useDebounce } from "@/lib/hooks";
 
 type Project = {
   id: number;
@@ -29,15 +31,6 @@ const STATUS_COLORS: Record<string, string> = {
   scrapped: "text-red-400",
   personal: "text-purple-400",
 };
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return debounced;
-}
 
 export default function ProjectList({ projects, allTags }: { projects: Project[]; allTags: string[] }) {
   const [query, setQuery] = useState("");
@@ -118,7 +111,9 @@ export default function ProjectList({ projects, allTags }: { projects: Project[]
                 {p.featured && <span className="text-[10px] font-mono text-[#d4f600]">* featured</span>}
               </div>
               {p.imageUrl ? (
-                <img src={p.imageUrl} alt={p.title} className="w-full h-32 object-cover" />
+                <div className="relative w-full h-32">
+                  <Image src={p.imageUrl} alt={p.title} fill className="object-cover" />
+                </div>
               ) : (
                 <div className="w-full h-16 bg-[#0d0d0d] flex items-center justify-center">
                   <span className="font-mono font-black text-3xl text-[#1e1e1e]">{p.title[0]}</span>

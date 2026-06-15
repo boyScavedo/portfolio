@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { db } from "@/db";
 import { profile } from "@/db/schema";
 
@@ -25,7 +26,7 @@ const DEFAULT_PROFILE: Omit<Profile, "id" | "updatedAt"> = {
   aboutParagraph3: "When I'm not coding, I'm exploring new technologies, writing blog posts, or filming videos about software development.",
 };
 
-export async function getProfile(): Promise<Profile> {
+export const getProfile = cache(async (): Promise<Profile> => {
   try {
     const rows = await db.select().from(profile).limit(1);
     if (rows.length > 0) return rows[0];
@@ -33,6 +34,6 @@ export async function getProfile(): Promise<Profile> {
     // DB not yet set up — return defaults
   }
   return { id: 1, updatedAt: new Date(), ...DEFAULT_PROFILE };
-}
+});
 
 export { STATUS_LABELS } from "@/lib/profile-constants";

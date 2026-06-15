@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { posts, comments, likes } from "@/db/schema";
@@ -6,20 +7,9 @@ import { eq, and, count } from "drizzle-orm";
 import { formatDate, readingTime } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { Components } from "react-markdown";
+import { markdownComponents } from "@/lib/markdown";
 import LikeButton from "./like-button";
 import CommentSection from "./comment-section";
-
-const markdownComponents: Components = {
-  a: ({ href, children, ...props }) => {
-    const isExternal = typeof href === "string" && (href.startsWith("http") || href.startsWith("//"));
-    return (
-      <a href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined} {...props}>
-        {children}
-      </a>
-    );
-  },
-};
 
 export const dynamic = "force-dynamic";
 
@@ -84,7 +74,9 @@ export default async function BlogPostPage({ params }: Props) {
             <span>{readingTime(post.content)} min read</span>
           </div>
           {post.coverUrl && (
-            <img src={post.coverUrl} alt={post.title} className="w-full rounded-2xl object-cover max-h-80 border border-[#1a1a1a]" />
+            <div className="relative w-full h-80">
+              <Image src={post.coverUrl} alt={post.title} fill className="object-cover rounded-2xl border border-[#1a1a1a]" />
+            </div>
           )}
         </header>
 

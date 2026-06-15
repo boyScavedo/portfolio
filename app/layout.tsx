@@ -117,7 +117,7 @@ export default async function RootLayout({
         <Cursor />
         <Navbar />
         <main className="flex-1 pt-[60px]">{children}</main>
-        <Footer />
+        <Footer profile={profile} />
       </body>
     </html>
   );

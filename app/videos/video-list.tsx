@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
+import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { useDebounce } from "@/lib/hooks";
 
 type Video = {
   id: string;
@@ -11,15 +13,6 @@ type Video = {
   publishedAt: string;
   url: string;
 };
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return debounced;
-}
 
 export default function VideoList({ videos }: { videos: Video[] }) {
   const [query, setQuery] = useState("");
@@ -77,7 +70,9 @@ export default function VideoList({ videos }: { videos: Video[] }) {
               className="group border border-[#1a1a1a] rounded-[2px] overflow-hidden hover:border-[#d4f600]/30 transition-all block"
             >
               <div className="relative">
-                <img src={v.thumbnail} alt={v.title} className="w-full aspect-video object-cover" />
+                <div className="relative w-full aspect-video">
+                  <Image src={v.thumbnail} alt={v.title} fill className="object-cover" />
+                </div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="w-10 h-10 rounded-[2px] bg-[#d4f600] flex items-center justify-center">
                     <svg className="w-5 h-5 text-black ml-0.5" fill="currentColor" viewBox="0 0 24 24">
