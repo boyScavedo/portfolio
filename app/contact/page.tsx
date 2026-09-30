@@ -5,9 +5,12 @@ import { getProfile } from "@/lib/profile";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Jeevan Adhikari.",
+  alternates: { canonical: `${BASE_URL}/contact` },
 };
 
 export default async function ContactPage() {

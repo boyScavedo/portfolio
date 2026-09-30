@@ -14,7 +14,8 @@ export default function Footer({ profile }: { profile: Profile }) {
         </div>
 
         <div className="flex gap-6 text-sm text-[#555]">
-          <Link href="/blog/feed.xml" className="hover:text-[#d4f600] transition-colors">RSS</Link>
+          <Link href="/blog/feed.xml" className="hover:text-[#d4f600] transition-colors">Blog RSS</Link>
+          <Link href="/news/feed.xml" className="hover:text-[#d4f600] transition-colors">News RSS</Link>
           {profile.githubUrl && (
             <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#d4f600] transition-colors">GitHub</a>
           )}

@@ -9,9 +9,15 @@ type Post = InferSelectModel<typeof posts>;
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "Blog",
   description: "Thoughts, tutorials, and ideas on software development.",
+  alternates: {
+    canonical: `${BASE_URL}/blog`,
+    types: { "application/rss+xml": `${BASE_URL}/blog/feed.xml` },
+  },
 };
 
 export default async function BlogPage() {

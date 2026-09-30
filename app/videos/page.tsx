@@ -4,9 +4,12 @@ import VideoList from "./video-list";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "Videos",
   description: "Latest YouTube videos by Jeevan Adhikari.",
+  alternates: { canonical: `${BASE_URL}/videos` },
 };
 
 export default async function VideosPage() {

@@ -6,9 +6,12 @@ import ProjectList from "./project-list";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "Projects",
   description: "Things I build and use - personal tools, experiments, and side projects.",
+  alternates: { canonical: `${BASE_URL}/projects` },
 };
 
 export default async function ProjectsPage() {

@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...but the template must ship, otherwise the required vars (RADAR_API_KEY,
+# GMAIL_*, NEXT_PUBLIC_BASE_URL) are only documented on this machine.
+!.env.example
 
 # vercel
 .vercel

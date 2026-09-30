@@ -16,14 +16,17 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const [project] = await db.select().from(projects).where(eq(projects.id, Number(id))).limit(1);
-  if (!project) return { title: "Project not found" };
+  if (!project) return { title: "Project not found", robots: { index: false, follow: false } };
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
   return {
     title: project.title,
     description: project.description,
+    robots: { index: true, follow: true },
+    alternates: { canonical: `${base}/projects/${project.id}` },
     openGraph: {
       title: project.title,
       description: project.description,
+      url: `${base}/projects/${project.id}`,
       images: project.imageUrl
         ? [{ url: project.imageUrl, width: 1200, height: 630, alt: project.title }]
         : [{ url: `${base}/opengraph-image`, width: 1200, height: 630, alt: "Jeevan Adhikari" }],

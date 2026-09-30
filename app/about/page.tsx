@@ -10,9 +10,12 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "About",
   description: "Learn about Jeevan Adhikari - full stack engineer, creator, and blogger.",
+  alternates: { canonical: `${BASE_URL}/about` },
 };
 
 export default async function AboutPage() {

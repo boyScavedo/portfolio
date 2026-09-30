@@ -9,9 +9,15 @@ type Post = InferSelectModel<typeof posts>;
 
 export const dynamic = "force-dynamic";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
   title: "News",
   description: "Automated Tech Radar digests — AI, agents, open source and security, twice daily.",
+  alternates: {
+    canonical: `${BASE_URL}/news`,
+    types: { "application/rss+xml": `${BASE_URL}/news/feed.xml` },
+  },
 };
 
 /**

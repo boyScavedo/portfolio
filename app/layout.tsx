@@ -66,12 +66,10 @@ export const metadata: Metadata = {
     creator: "@jeevanadh",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Jeevan Adhikari - Full Stack Engineer" }],
   },
-  alternates: {
-    canonical: BASE_URL,
-    types: {
-      "application/rss+xml": `${BASE_URL}/blog/feed.xml`,
-    },
-  },
+  // No `alternates.canonical` here on purpose. It used to be set to BASE_URL,
+  // which made every page declare itself a duplicate of the homepage and let
+  // Google consolidate the whole blog away. Canonicals are declared per route
+  // instead; RSS alternates live on /blog and /news where the feeds actually are.
 };
 
 export default async function RootLayout({
@@ -99,6 +97,7 @@ export default async function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
+              "@id": `${BASE_URL}/#person`,
               name: "Jeevan Adhikari",
               alternateName: ["Jeevan", "Jeevan Adhikari", "boyScavedo"],
               url: BASE_URL,
@@ -107,6 +106,22 @@ export default async function RootLayout({
               knowsAbout: profile.techStack?.length ? profile.techStack : ["React", "Next.js", "TypeScript", "Node.js", "Python", "PostgreSQL", "Full Stack Development"],
               nationality: { "@type": "Country", name: profile.location ?? "Nepal" },
               sameAs: sameAs.length > 0 ? sameAs : undefined,
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "@id": `${BASE_URL}/#website`,
+              name: "Jeevan Adhikari",
+              url: BASE_URL,
+              inLanguage: "en-US",
+              description:
+                "Jeevan Adhikari is a full stack engineer and developer from Nepal.",
+              publisher: { "@id": `${BASE_URL}/#person` },
             }),
           }}
         />

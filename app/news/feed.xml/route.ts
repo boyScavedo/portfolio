@@ -5,7 +5,11 @@ import { buildRss, rssResponse } from "@/lib/rss";
 
 export const revalidate = 3600;
 
-/** Hand-written posts only. Radar digests live on /news/feed.xml. */
+/**
+ * Radar digests only. These publish every 12h, so this channel is what
+ * actually carries new content — /blog/feed.xml is hand-written and can go
+ * months between posts, which makes it a poor polling signal for readers.
+ */
 export async function GET() {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
@@ -14,7 +18,7 @@ export async function GET() {
     allPosts = await db
       .select()
       .from(posts)
-      .where(and(eq(posts.published, true), eq(posts.source, "blog")))
+      .where(and(eq(posts.published, true), eq(posts.source, "radar")))
       .orderBy(desc(posts.publishedAt));
   } catch {
     allPosts = [];
@@ -22,11 +26,11 @@ export async function GET() {
 
   return rssResponse(
     buildRss(base, {
-      feedPath: "/blog/feed.xml",
-      pagePath: "/blog",
-      title: "Jeevan Adhikari - Blog",
+      feedPath: "/news/feed.xml",
+      pagePath: "/news",
+      title: "Jeevan Adhikari - Tech Radar",
       description:
-        "Thoughts, tutorials, and ideas on software development by Jeevan Adhikari.",
+        "Automated tech radar digests — AI, agents, open source and security, twice daily.",
     }, allPosts)
   );
 }
