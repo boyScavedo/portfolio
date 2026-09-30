@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 
 type Post = InferSelectModel<typeof posts>;
@@ -15,7 +15,7 @@ export async function GET() {
     allPosts = await db
       .select()
       .from(posts)
-      .where(eq(posts.published, true))
+      .where(and(eq(posts.published, true), eq(posts.source, "blog")))
       .orderBy(desc(posts.publishedAt))
       .limit(20);
   } catch {

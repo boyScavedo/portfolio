@@ -43,3 +43,29 @@ export async function isAdmin(): Promise<boolean> {
   if (!token) return false;
   return verifyToken(token);
 }
+
+/**
+ * Check an incoming `Authorization: Bearer <key>` against RADAR_API_KEY.
+ *
+ * Separate from the admin cookie on purpose: this is a machine-to-machine
+ * credential held only by the radar runner, and reusing the browser token would
+ * mean a leaked dashboard session could post digests.
+ *
+ * Fails closed if RADAR_API_KEY is unset, so a missing env var blocks posting
+ * rather than opening the endpoint to anyone.
+ */
+export function verifyRadarKey(header: string | null): boolean {
+  const expected = process.env.RADAR_API_KEY;
+  if (!expected) {
+    console.error("[radar] RADAR_API_KEY is not set — rejecting request");
+    return false;
+  }
+  if (!header?.startsWith("Bearer ")) return false;
+
+  const provided = header.slice("Bearer ".length);
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  // timingSafeEqual throws on length mismatch, so compare lengths first.
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}

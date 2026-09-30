@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { markdownComponents } from "@/lib/markdown";
 
 type Post = {
   id?: number;
@@ -27,6 +30,7 @@ export default function PostForm({ initial }: { initial?: Partial<Post> }) {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [tab, setTab] = useState<"write" | "preview">("write");
 
   function set(key: keyof Post, value: string | boolean) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -34,6 +38,11 @@ export default function PostForm({ initial }: { initial?: Partial<Post> }) {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.content.trim()) {
+      setError("Content is required.");
+      setTab("write");
+      return;
+    }
     setSaving(true);
     setError("");
     const payload = {
@@ -65,14 +74,46 @@ export default function PostForm({ initial }: { initial?: Partial<Post> }) {
       <Field label="Cover image URL" value={form.coverUrl} onChange={(v) => set("coverUrl", v)} placeholder="https://..." />
       <Field label="Tags (comma-separated)" value={form.tags} onChange={(v) => set("tags", v)} placeholder="nextjs, react, tutorial" />
       <div className="space-y-1">
-        <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Content (Markdown) *</label>
-        <textarea
-          required
-          rows={20}
-          value={form.content}
-          onChange={(e) => set("content", e.target.value)}
-          className="w-full font-mono rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors resize-y"
-        />
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-medium text-[#555] uppercase tracking-wider">Content (Markdown) *</label>
+          <div className="flex gap-1 rounded-lg border border-[#2a2a2a] bg-[#111] p-0.5">
+            {(["write", "preview"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={`rounded-md px-3 py-1 font-mono text-xs capitalize transition-colors ${
+                  tab === t ? "bg-[#d4f600] text-black" : "text-[#555] hover:text-white"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {tab === "write" ? (
+          <textarea
+            required
+            rows={20}
+            value={form.content}
+            onChange={(e) => set("content", e.target.value)}
+            className="w-full font-mono rounded-xl border border-[#2a2a2a] bg-[#111] px-4 py-3 text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#d4f600] transition-colors resize-y"
+          />
+        ) : (
+          // Same renderer as the live article, so what you see here is what publishes.
+          <div className="min-h-[20rem] rounded-xl border border-[#2a2a2a] bg-[#0d0d0d] px-5 py-4">
+            <div className="prose prose-lg max-w-none prose-invert">
+              {form.content.trim() ? (
+                <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
+                  {form.content}
+                </ReactMarkdown>
+              ) : (
+                <p className="text-sm text-[#555]">Nothing to preview yet.</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <label className="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" checked={form.published} onChange={(e) => set("published", e.target.checked)} className="rounded" />
@@ -86,6 +127,14 @@ export default function PostForm({ initial }: { initial?: Partial<Post> }) {
         <button type="button" onClick={() => router.back()} className="rounded-full border border-[#2a2a2a] px-6 py-2.5 text-sm text-[#555] hover:border-[#d4f600]/40 hover:text-[#d4f600] transition-colors">
           Cancel
         </button>
+        {initial?.id && (
+          <a
+            href={`/admin/posts/${initial.id}/preview`}
+            className="rounded-full border border-[#2a2a2a] px-6 py-2.5 text-sm text-[#555] hover:border-[#d4f600]/40 hover:text-[#d4f600] transition-colors"
+          >
+            Full preview
+          </a>
+        )}
       </div>
     </form>
   );

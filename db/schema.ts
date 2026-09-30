@@ -9,10 +9,17 @@ export const posts = pgTable("posts", {
   coverUrl: text("cover_url"),
   tags: text("tags").array().default([]),
   published: boolean("published").default(false).notNull(),
+  // 'blog' = hand-written, 'radar' = posted by the tech radar pipeline. Lets the
+  // blog list and the news list stay separate without a second table.
+  source: varchar("source", { length: 20 }).default("blog").notNull(),
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (t) => [index("posts_slug_idx").on(t.slug), index("posts_published_idx").on(t.published)]);
+}, (t) => [
+  index("posts_slug_idx").on(t.slug),
+  index("posts_published_idx").on(t.published),
+  index("posts_source_idx").on(t.source),
+]);
 
 export const comments = pgTable("comments", {
   id: serial("id").primaryKey(),

@@ -1,27 +1,30 @@
 import type { Metadata } from "next";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { and, eq, desc } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
-import PostList from "./post-list";
+import PostList from "../blog/post-list";
 
 type Post = InferSelectModel<typeof posts>;
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Thoughts, tutorials, and ideas on software development.",
+  title: "News",
+  description: "Automated Tech Radar digests — AI, agents, open source and security, twice daily.",
 };
 
-export default async function BlogPage() {
+/**
+ * The machine-written half of the writing. Shares PostList with /blog so
+ * filtering and layout stay identical; only the query differs.
+ */
+export default async function NewsPage() {
   let allPosts: Post[] = [];
   try {
-    // source = "blog" keeps the machine-written digests on /news instead.
     allPosts = await db
       .select()
       .from(posts)
-      .where(and(eq(posts.published, true), eq(posts.source, "blog")))
+      .where(and(eq(posts.published, true), eq(posts.source, "radar")))
       .orderBy(desc(posts.publishedAt));
   } catch {
     allPosts = [];
@@ -31,12 +34,12 @@ export default async function BlogPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12 w-full">
       <div className="mb-8 space-y-1">
-        <p className="text-[10px] font-mono text-[#555] uppercase tracking-widest">~/blog</p>
+        <p className="text-[10px] font-mono text-[#555] uppercase tracking-widest">~/news</p>
         <h1 className="font-mono font-black text-4xl text-[#e0e0e0]">
-          blog<span className="text-[#d4f600]">_</span>
+          news<span className="text-[#d4f600]">_</span>
         </h1>
         <p className="text-xs font-mono text-[#555]">
-          {allPosts.length} post{allPosts.length !== 1 ? "s" : ""} · thoughts, tutorials, learnings
+          {allPosts.length} digest{allPosts.length !== 1 ? "s" : ""} · tech radar, twice daily
         </p>
       </div>
 

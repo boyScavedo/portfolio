@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { db } from "@/db";
 import { posts, projects } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 import { formatDate, readingTime } from "@/lib/utils";
 import { getProfile } from "@/lib/profile";
 import Hero from "@/components/hero";
@@ -28,7 +28,7 @@ const FALLBACK_MARQUEE = ["ship fast", "learn daily", "build in public", "stay c
 export default async function Home() {
   const [profile, latestPosts, featuredProjects] = await Promise.all([
     getProfile(),
-    db.select().from(posts).where(eq(posts.published, true)).orderBy(desc(posts.publishedAt)).limit(3).catch(() => []),
+    db.select().from(posts).where(and(eq(posts.published, true), eq(posts.source, "blog"))).orderBy(desc(posts.publishedAt)).limit(3).catch(() => []),
     db.select().from(projects).where(eq(projects.featured, true)).orderBy(projects.order).limit(3).catch(() => []),
   ]);
   const techStack = (profile.techStack && profile.techStack.length > 0) ? profile.techStack : FALLBACK_TECH;
@@ -119,9 +119,14 @@ export default async function Home() {
               <p className="text-[10px] font-mono text-[#d4f600] uppercase tracking-widest mb-0.5">~/blog</p>
               <h2 className="font-mono font-black text-2xl text-[#e0e0e0]">from the blog</h2>
             </div>
-            <Link href="/blog" className="text-xs font-mono text-[#555] hover:text-[#d4f600] transition-colors hidden sm:block">
-              all posts →
-            </Link>
+            <div className="hidden sm:flex items-center gap-4">
+              <Link href="/news" className="text-xs font-mono text-[#555] hover:text-[#d4f600] transition-colors">
+                news →
+              </Link>
+              <Link href="/blog" className="text-xs font-mono text-[#555] hover:text-[#d4f600] transition-colors">
+                all posts →
+              </Link>
+            </div>
           </div>
         </FadeUp>
 
